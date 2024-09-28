@@ -3,14 +3,12 @@ import '../../public/plugins/fontawesome-free/css/all.min.css';
 import '../../public/dist/css/adminlte.min.css';
 import Navbar from './components/navbar';
 import Sidebar from './components/sidebar';
-
-
 export default function DashboardLayout(
-//     {
-//   children, 
-// }: Readonly<{
-//   children: React.ReactNode;
-// }>
+    {
+  children, 
+}: Readonly<{
+  children: React.ReactNode;
+}>
 ) {
   return (
     <>
@@ -20,11 +18,12 @@ export default function DashboardLayout(
             <Sidebar/>
           <div className="content-wrapper">
                 <section className="content">
-                    <div className="container-fluid">My Content</div>
+                    <div className="container-fluid">
+                    {children}  {/* This will display the content of the current page */}
+                </div>
                 </section>
           </div>
         </div>
-      
       </div>
     </>
   ); 
