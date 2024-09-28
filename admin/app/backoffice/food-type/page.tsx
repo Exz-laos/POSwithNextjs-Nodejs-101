@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import config from "@/app/config";
 export default function Page() {
+    const [id, setId] = useState(0);
     const [name,setName]=useState("");
     const [remark,setRemark]=useState("");
     const [foodTypes, setFoodTypes] = useState([]);
@@ -12,13 +13,25 @@ export default function Page() {
     useEffect(() => {
         fetchData();
     }, []);
+    const edit = (item: any) => {
+        setId(item.id);
+        setName(item.name);
+        setRemark(item.remark);
+    }
     const handleSave = async () => {
         try{
             const payload = {
                 name: name,
-                remark: remark
+                remark: remark,
+                id: id,
+            };
+
+            if(id==0){
+                await axios.post(config.apiServer + "/api/foodtype/create", payload);
+            }else{
+                await axios.put(config.apiServer + "/api/foodtype/update", payload);
+                setId(0);
             }
-            await axios.post(config.apiServer + "/api/foodType/create", payload);
             fetchData();
             document.getElementById("modalFoodType_btnClose")?.click();
         }catch(e: any){
@@ -33,7 +46,7 @@ export default function Page() {
 
     const fetchData = async () => {
         try{
-            const rows = await axios.get(config.apiServer + "/api/foodType/list");
+            const rows = await axios.get(config.apiServer + "/api/foodtype/list");
             setFoodTypes(rows.data.results);
         }catch(e:any){
             Swal.fire({  
@@ -43,6 +56,35 @@ export default function Page() {
             })
         }
     };
+
+    const handleRemove = async (item: any)=> {
+        try{
+            const button = await Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to delete this menu?",
+                icon: "question",
+                showCancelButton: true,
+                showConfirmButton: true,
+            });
+            if (button.isConfirmed) {
+                await axios.delete(
+                    config.apiServer + "/api/foodtype/remove/" + item.id);
+                fetchData();
+            }
+        }catch(e:any){
+            Swal.fire({
+                title: "error",
+                text: e.message,
+                icon: "error",
+            })
+        }
+    }
+
+    const clearForm=()=>{
+        setId(0);
+        setName("");
+        setRemark("");
+    }
     return (
       <div className="card mt-3">
         <div className="card-header">Types of food and drink</div>
@@ -51,6 +93,7 @@ export default function Page() {
             className="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#modalFoodType"
+            onClick={clearForm}
           >
             <i className="fa fa-plus me-2"></i>Add menu
           </button>
@@ -71,10 +114,14 @@ export default function Page() {
                   <td className="font-weight-bold">{item.name}</td>
                   <td>{item.remark}</td>
                   <td className="text-center">
-                    <button className="btn btn-sm btn-outline-primary me-2">
+                    <button className="btn btn-sm btn-outline-primary me-2"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#modalFoodType" 
+                    onClick={() => edit(item)}>
+
                       <i className="fa fa-edit"></i>
                     </button>
-                    <button className="btn btn-sm btn-outline-danger">
+                    <button className="btn btn-sm btn-outline-danger" onClick={() => handleRemove(item)}>
                       <i className="fa fa-trash"></i>
                     </button>
                   </td>
@@ -99,18 +146,15 @@ export default function Page() {
               text-transform: uppercase;
               letter-spacing: 0.1em;
             }
-
             th,
             td {
               vertical-align: middle;
             }
-
             .btn-outline-primary {
               border-color: #007bff;
               color: #007bff;
               transition: background-color 0.2s, color 0.2s;
             }
-
             .btn-outline-primary:hover {
               background-color: #007bff;
               color: #fff;
