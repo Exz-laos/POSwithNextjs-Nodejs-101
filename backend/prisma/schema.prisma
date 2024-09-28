@@ -14,10 +14,17 @@ datasource db {
 }
 
 model User {
-  id Int @id() @default(autoincrement())
-  name String
+  id       Int    @id() @default(autoincrement())
+  name     String
   username String
   password String
-  level String @default("admin")
-  status String @default("use")
+  level    String @default("admin")
+  status   String @default("use")
+}
+
+model Foodtype {
+  id     Int    @id() @default(autoincrement())
+  name   String
+  remark String
+  status String @default("use") //use,delete
 }
