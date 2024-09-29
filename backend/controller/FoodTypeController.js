@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 module.exports = {
     create: async (req,res)=>{
         try{
-            await prisma.foodtype.create({
+            await prisma.foodType.create({
                 data: {
                     name: req.body.name,
                     remark: req.body.remark,
@@ -21,7 +21,7 @@ module.exports = {
 
     list: async (req,res)=>{
         try{
-            const rows = await prisma.foodtype.findMany({
+            const rows = await prisma.foodType.findMany({
                 where:{
                     status: "use",
                 },
@@ -37,7 +37,7 @@ module.exports = {
 
     remove: async (req,res)=>{
         try{
-            await prisma.foodtype.update({
+            await prisma.foodType.update({
                 data: {
                     status: "delete",
                 },
@@ -55,7 +55,7 @@ module.exports = {
 
     update: async (req,res)=>{
         try{
-            await prisma.foodtype.update({
+            await prisma.foodType.update({
                 data: {
                     name: req.body.name,
                     remark: req.body.remark,

@@ -98,7 +98,7 @@ export default function Page() {
             <i className="fa fa-plus me-2"></i>Add menu
           </button>
 
-          <table className="table mt-4 table-hover table-bordered">
+          <table className="table mt-4 table-hover table-bordered table-striped">
             <thead className="thead-light">
               <tr>
                 <th style={{ width: "200px" }}>Name</th>
