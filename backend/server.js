@@ -10,6 +10,7 @@ app.use(cors());
 const UserController = require("./controller/UserController");
 const FoodTypeController = require("./controller/FoodTypeController");
 const FoodSizeController = require("./controller/FoodSizeController");
+const TasteController = require("./controller/TasteController");
 
 
 //admin
@@ -24,6 +25,11 @@ app.post("/api/foodsize/create", (req, res) => FoodSizeController.create(req, re
 app.get("/api/foodsize/list", (req, res) => FoodSizeController.list(req, res));
 app.delete("/api/foodsize/remove/:id",(req, res)=>FoodSizeController.remove(req, res));
 app.put("/api/foodsize/update", (req, res)=>FoodSizeController.update(req, res));
+//admin-taste
+app.post("/api/taste/create", (req, res) => TasteController.create(req, res));
+app.get("/api/taste/list", (req, res) => TasteController.list(req, res));
+app.delete("/api/taste/remove/:id",(req, res)=>TasteController.remove(req, res));
+app.put("/api/taste/update", (req, res)=>TasteController.update(req, res));
 
 app.listen(3001,()=>{
     console.log("API Server running on port 3001");

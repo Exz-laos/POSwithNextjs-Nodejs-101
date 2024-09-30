@@ -82,6 +82,14 @@ export default function Sidebar() {
                       </p>
                     </Link>
                   </li>
+                  <li className="nav-item">
+                    <Link href="/backoffice/food-taste" className="nav-link">
+                      <i className="nav-icon fas fa-file-alt"></i>
+                      <p>
+                        Food taste
+                      </p>
+                    </Link>
+                  </li>
                 </ul>
               </nav>
             </div>

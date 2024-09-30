@@ -66,9 +66,10 @@ module.exports = {
             foodTypeId: req.body.foodTypeId,
           },
           where:{
-            id: req.body.id
+            id: req.body.id,
           }
-        });
+
+        })
         return res.send({ message: "updated success" });
 
       }catch(e){
