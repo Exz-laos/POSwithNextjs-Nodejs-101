@@ -42,15 +42,16 @@ export default function Sidebar() {
         <>
                 <aside className="main-sidebar sidebar-dark-primary elevation-4">
             <a href="index3.html" className="brand-link">
-         
-              <span className="brand-text font-weight-light">ExzPOS</span>
+             <i className="fas fa-store-alt me-2"></i>
+              <span className="brand-text font-weight-light">POS FOOD STORE</span>
             </a>
             <div className="sidebar">
               <div className="user-panel mt-3 pb-3 mb-3 d-flex">
              
                 <div className="info">
+                  
                   <a href="#" className="d-block">
-                     {name}
+                      <i className="fas fa-user me-2"></i>{name}
                   </a>
                   <button className="btn btn-danger btn-sm" onClick={signOut}>
                     <i className="fas fa-sign-out-alt"></i> Sign out

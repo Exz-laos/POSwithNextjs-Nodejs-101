@@ -17,6 +17,7 @@ export default function Page() {
         fetchData();
         fetchDataFoodTypes();
     },[]);
+    
     const fetchData = async () => {
         try{
             const res = await axios.get(config.apiServer + "/api/foodsize/list");
@@ -55,7 +56,12 @@ export default function Page() {
                 foodTypeId: foodTypeId,
                 moneyAdded: moneyAdded
             }
-            await axios.post(config.apiServer + "/api/foodsize/create", payload);
+            if(id==0){
+              await axios.post(config.apiServer + "/api/foodsize/create", payload);
+          }else{
+              await axios.put(config.apiServer + "/api/foodsize/update", payload);
+              setId(0);
+          }
             fetchData();
             document.getElementById("modalFoodSize_btnClose")?.click();
 
@@ -66,12 +72,38 @@ export default function Page() {
                 icon: "error",
             })
         }
-
     };
 
     const edit = (item: any) => {  
+      setFoodTypeId(item.foodTypeId);
+      setId(item.id);
+      setMoneyAdded(item.moneyAdded);
+      setName(item.name);
+      setRemark(item.remark);
     }
-    const remove = async (id: number) => {};
+
+    const remove = async (item: any) => {
+      try{
+        const button = await Swal.fire({
+            title: "Are you sure?",
+            text: "Do you want to delete?",
+            icon: "question",
+            showCancelButton: true,
+            showConfirmButton: true,
+        });
+        if (button.isConfirmed) {
+            await axios.delete(
+                config.apiServer + "/api/foodsize/remove/" + item.id);
+            fetchData();
+        }
+    }catch(e:any){
+        Swal.fire({
+            title: "error",
+            text: e.message,
+            icon: "error",
+        })
+    }
+    };
 
     
 
@@ -115,7 +147,7 @@ export default function Page() {
                   <tr key={item.id} className="align-middle">
                     {/* <td className="font-weight-bold">{item.FoodType.name}</td> */}
                     <td className="font-weight-bold">
-                      {item.FoodType?.name || "N/A"}
+                      {item.FoodType.name || "N/A"}
                     </td>{" "}
                     {/* Display food type name */}
                     <td>{item.name}</td>
@@ -125,7 +157,7 @@ export default function Page() {
                       <button
                         className="btn btn-sm btn-outline-primary me-2"
                         data-bs-toggle="modal"
-                        data-bs-target="#modalFoodType"
+                        data-bs-target="#modalFoodSize"
                         onClick={() => edit(item)}
                       >
                         <i className="fa fa-edit"></i>

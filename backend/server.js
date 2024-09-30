@@ -22,6 +22,8 @@ app.put("/api/foodtype/update", (req, res)=>FoodTypeController.update(req, res))
 //admin-foodsize
 app.post("/api/foodsize/create", (req, res) => FoodSizeController.create(req, res));
 app.get("/api/foodsize/list", (req, res) => FoodSizeController.list(req, res));
+app.delete("/api/foodsize/remove/:id",(req, res)=>FoodSizeController.remove(req, res));
+app.put("/api/foodsize/update", (req, res)=>FoodSizeController.update(req, res));
 
 app.listen(3001,()=>{
     console.log("API Server running on port 3001");
