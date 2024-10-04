@@ -2,15 +2,19 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const fileUpload = require("express-fileupload");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(fileUpload());
+app.use('/uploads', express.static('uploads'));
 
 const UserController = require("./controller/UserController");
 const FoodTypeController = require("./controller/FoodTypeController");
 const FoodSizeController = require("./controller/FoodSizeController");
 const TasteController = require("./controller/TasteController");
+const FoodController = require("./controller/FoodController");
 
 
 //admin
@@ -30,6 +34,15 @@ app.post("/api/taste/create", (req, res) => TasteController.create(req, res));
 app.get("/api/taste/list", (req, res) => TasteController.list(req, res));
 app.delete("/api/taste/remove/:id",(req, res)=>TasteController.remove(req, res));
 app.put("/api/taste/update", (req, res)=>TasteController.update(req, res));
+//admin-food
+app.post("/api/food/upload", (req, res) => FoodController.upload(req, res));
+app.post("/api/food/create", (req, res) => FoodController.create(req, res));
+app.get("/api/food/list", (req, res) => FoodController.list(req, res));
+app.put("/api/food/update", (req, res)=>FoodController.update(req, res));
+app.delete("/api/food/remove/:id",(req, res)=>FoodController.remove(req, res));
+
+
+
 
 app.listen(3001,()=>{
     console.log("API Server running on port 3001");

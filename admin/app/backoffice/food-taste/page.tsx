@@ -4,6 +4,7 @@ import MyModal from "../components/MyModal";
 import Swal from "sweetalert2";
 import axios from "axios";
 import config from "@/app/config";
+import React from "react";
 export default function Page() {
     const [foodTypeId,setFoodTypeId]=useState(0);
     const [foodTypes, setFoodTypes] = useState([]);
@@ -55,6 +56,7 @@ export default function Page() {
                 name: name,
                 remark: remark,
                 id: id
+                
             }
 
             if(id==0){

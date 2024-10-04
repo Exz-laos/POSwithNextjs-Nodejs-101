@@ -4,6 +4,7 @@ import MyModal from "../components/MyModal";
 import Swal from "sweetalert2";
 import axios from "axios";
 import config from "@/app/config";
+import '../components/myStyle.css';
 export default function Page() {
     const [id, setId] = useState(0);
     const [name,setName]=useState("");
@@ -129,48 +130,7 @@ export default function Page() {
               ))}
             </tbody>
           </table>
-          <style jsx>{`
-            .table {
-              background-color: #fff;
-              border-radius: 8px;
-              overflow: hidden;
-              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            }
-
-            .table-hover tbody tr:hover {
-              background-color: #f7f9fb;
-            }
-
-            .thead-light {
-              background-color: #f1f3f5;
-              text-transform: uppercase;
-              letter-spacing: 0.1em;
-            }
-            th,
-            td {
-              vertical-align: middle;
-            }
-            .btn-outline-primary {
-              border-color: #007bff;
-              color: #007bff;
-              transition: background-color 0.2s, color 0.2s;
-            }
-            .btn-outline-primary:hover {
-              background-color: #007bff;
-              color: #fff;
-            }
-
-            .btn-outline-danger {
-              border-color: #dc3545;
-              color: #dc3545;
-              transition: background-color 0.2s, color 0.2s;
-            }
-
-            .btn-outline-danger:hover {
-              background-color: #dc3545;
-              color: #fff;
-            }
-          `}</style>
+    
         </div>
         <MyModal id="modalFoodType" title="Types of food and drink">
           <div>name</div>
