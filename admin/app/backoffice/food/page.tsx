@@ -2,7 +2,7 @@
 import config from "@/app/config";
 import axios from "axios";
 import MyModal from "../components/MyModal";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import React from "react";
 import "../components/myStyle.css";
@@ -14,10 +14,11 @@ export default function Page() {
   const [name, setName] = useState("");
   const [remark, setRemark] = useState("");
   const [id, setId] = useState(0);
-  const [img, setImg] = useState("");
+  const [img, setImg] = useState('');
   const [price, setPrice] = useState(0);
   const [myFile, setMyFile] = useState<File | null>(null);
   const [foodType, setFoodType] = useState("food");
+  const fileInputRef = useRef(null); // Reference to the file input
 
   useEffect(() => {
     fetchDataFoodTypes();
@@ -55,6 +56,7 @@ export default function Page() {
   const handleSelectedFile = (e: any) => {
     if (e.target.files.length > 0) {
       setMyFile(e.target.files[0]);
+      
     }
   };
 
@@ -80,7 +82,7 @@ export default function Page() {
           title: "success",
           text: res.data.message,
           icon: "success",
-          timer: 1000,
+          timer: 1500,
         });
       } else {
         const res = await axios.put(
@@ -164,16 +166,19 @@ export default function Page() {
       return "drink";
     }
   };
-
   const handleClearForm = () => {
-    setFoodTypeId(0);
+    setName(""); 
+    setImg(""); 
+    setMyFile(null); 
+    setFoodTypeId(0); 
     setId(0);
-    setName("");
-    setRemark("");
-    setPrice(0);
+    setRemark(""); 
+    setPrice(0); 
     setFoodType("food");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Clear file input
+    }
   };
-
   return (
     <>
       <div className="card mt-3">
@@ -264,11 +269,15 @@ export default function Page() {
         </select>
 
         <div className="mt-3">Image</div>
-        <input
-          type="file"
-          className="form-control"
-          onChange={(e) => handleSelectedFile(e)}
-        />
+        {img != '' && 
+           <img className="mb-2 img-fluid" src={config.apiServer + "/uploads/" + img} alt={img} width="100" />
+        }
+          <input
+        type="file"
+        className="form-control"
+        onChange={(e) => handleSelectedFile(e)}
+        ref={fileInputRef} // Attach reference to file input
+      />
 
         <div className="mt-3">Name</div>
         <input
