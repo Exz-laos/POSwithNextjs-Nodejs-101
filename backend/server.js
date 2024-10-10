@@ -40,6 +40,7 @@ app.post("/api/food/create", (req, res) => FoodController.create(req, res));
 app.get("/api/food/list", (req, res) => FoodController.list(req, res));
 app.put("/api/food/update", (req, res)=>FoodController.update(req, res));
 app.delete("/api/food/remove/:id",(req, res)=>FoodController.remove(req, res));
+app.get("/api/food/filter/:foodType", (req, res) => FoodController.filter(req, res));
 
 
 

@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import Link from "next/link";
 import { FaUser, FaSignOutAlt, FaTh, FaList, FaFileAlt, FaStoreAlt, } from "react-icons/fa";
 import { IoFastFoodOutline } from "react-icons/io5";
+import { SiSinglestore } from "react-icons/si";
 export default function Sidebar() {
   const [name, setName] = useState("");
   const router = useRouter();
@@ -52,9 +53,13 @@ export default function Sidebar() {
         <FaUser className="fs-3 me-2 text-white" />
         <div className="info">
           <a href="#" className="d-block text-white">{name}</a>
-          <button className="btn btn-sm btn-danger mt-2" onClick={signOut}>
-            <FaSignOutAlt className="me-1" /> Sign out
-          </button>
+          <button 
+          onClick={signOut}
+          className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+        >
+          <FaSignOutAlt className="mr-2" />
+          Sign Out
+        </button>
         </div>
       </div>
 
@@ -83,6 +88,13 @@ export default function Sidebar() {
           <Link href="/backoffice/food" className="nav-link text-white d-flex align-items-center">
             <IoFastFoodOutline className="nav-icon me-2" />
             <p>Food</p>
+          </Link>
+        </li>
+
+        <li className="nav-item">
+          <Link href="/backoffice/sale" className="nav-link text-white d-flex align-items-center">
+            <SiSinglestore className="nav-icon me-2" />
+            <p>Sale</p>
           </Link>
         </li>
       </ul>

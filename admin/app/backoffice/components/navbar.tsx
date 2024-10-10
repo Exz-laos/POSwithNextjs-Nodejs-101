@@ -41,7 +41,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="main-header navbar navbar-expand navbar-white navbar-light">
+      <nav className="main-header navbar navbar-expand navbar-blue ">
         <ul className="navbar-nav ml-auto">
           <li className="nav-item dropdown">
             <a
