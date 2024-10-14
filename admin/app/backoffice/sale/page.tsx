@@ -8,10 +8,17 @@ import Swal from "sweetalert2";
 export default function Page() {
   const [table, setTable] = useState(1);
   const [foods, setFoods] = useState([]);
+  const [saleTemps, setSaleTemps] = useState([]);
+
+
 
   useEffect(() => {
     getFoods();
+    fetchDataSaleTemp();
   }, []);
+
+
+
 
   const getFoods = async () => {
     try {
@@ -25,22 +32,123 @@ export default function Page() {
       });
     }
   };
-
-
   const filterFoods = async (foodType: string) => {
     try {
-        const res = await axios.get(config.apiServer + '/api/food/filter/' + foodType);
-        setFoods(res.data.results);
+      const res = await axios.get(
+        config.apiServer + "/api/food/filter/" + foodType
+      );
+      setFoods(res.data.results);
     } catch (e: any) {
-        Swal.fire({
-            title: 'error',
-            text: e.message,
-            icon: 'error'
-        })
+      Swal.fire({
+        title: "error",
+        text: e.message,
+        icon: "error",
+      });
     }
-}
+  };
+  const sale = async (foodId: number) => {
+    try {
+      const payload = {
+        tableNo: table,
+        userId: Number(localStorage.getItem("next_user_id")),
+        foodId: foodId,
+      };
+      await axios.post(config.apiServer + "/api/saletemp/create", payload);
+      fetchDataSaleTemp();
+    } catch (e: any) {
+      Swal.fire({
+        title: "error",
+        text: e.message,
+        icon: "error",
+      });
+    }
+  };
+  const fetchDataSaleTemp = async () => {
+    try {
+      const res = await axios.get(config.apiServer + "/api/saletemp/list");
+      setSaleTemps(res.data.results);
+    } catch (e: any) {
+      Swal.fire({
+        title: "error",
+        text: e.message,
+        icon: "error",
+      });
+    }
+  };
 
-  
+  const removeSaleTemp = async(id: number) =>{
+    try{
+      const button = await Swal.fire({
+        
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      });
+
+      if(button.isConfirmed){
+        await axios.delete(config.apiServer + "/api/saletemp/remove/" + id);
+        fetchDataSaleTemp();
+      }
+
+    }catch(e: any){
+      Swal.fire({
+        title: 'error',
+        text: e.message,
+        icon: 'error'
+      })
+
+    }
+  }
+
+  const removeAllSaleTemp = async () =>{
+    try{
+      const button = await Swal.fire({
+        title: 'Do you want to delete all?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      });
+      if (button.isConfirmed){
+        const payload = {
+          tableNo: table,
+          userId: Number(localStorage.getItem("next_user_id")),
+        }
+        await axios.delete(config.apiServer + "/api/saletemp/removeAll", {data: payload});
+        fetchDataSaleTemp();
+      }
+
+    }catch(e: any){
+      Swal.fire({
+        title: 'error',
+        text: e.message,
+        icon: 'error'
+      })
+    }
+  }
+
+  const updateQty = async( id: number, qty: number)=>{
+    try{
+      const payload = {
+        qty: qty,
+        id: id
+      }
+      await axios.put(config.apiServer + '/api/saleTemp/updateQty', payload);
+      fetchDataSaleTemp();
+
+    }catch(e: any){
+      Swal.fire({
+        title: 'error',
+        text: e.message,
+        icon: 'error'
+      })
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6">
@@ -61,18 +169,30 @@ export default function Page() {
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition duration-200" onClick={()=> filterFoods('food')}>
+            <button
+              className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition duration-200"
+              onClick={() => filterFoods("food")}
+            >
               <i className="fa fa-hamburger mr-2"></i>Food
             </button>
-            <button className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-200" onClick={()=> filterFoods('drink')}>
+            <button
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-200"
+              onClick={() => filterFoods("drink")}
+            >
               <i className="fa fa-coffee mr-2"></i>Drinks
             </button>
-            <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition duration-200"  onClick={() => filterFoods('all')}>
+            <button
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition duration-200"
+              onClick={() => filterFoods("all")}
+            >
               <i className="fa fa-list mr-2"></i>All
             </button>
-            <button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition duration-200">
+            <button disabled={saleTemps.length === 0} onClick={() => removeAllSaleTemp()}
+               className="px-4 py-2 bg-red-600 hover:bg-red-700
+                text-white rounded-lg transition duration-200">
               <i className="fa fa-trash mr-2"></i>Clear
             </button>
+
           </div>
         </div>
 
@@ -81,7 +201,10 @@ export default function Page() {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {foods.map((food: any) => (
                 <div key={food.id} className="group cursor-pointer">
-                  <div className="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300">
+                  <div
+                    className="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300"
+                    onClick={() => sale(food.id)}
+                  >
                     <div className="relative">
                       <img
                         src={config.apiServer + "/uploads/" + food.img}
@@ -91,8 +214,12 @@ export default function Page() {
                       <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition duration-300"></div>
                     </div>
                     <div className="p-4">
-                      <h3 className="text-lg font-semibold text-gray-200 mb-2">{food.name}</h3>
-                      <p className="text-2xl font-bold text-yellow-400">${food.price}</p>
+                      <h3 className="text-lg font-semibold text-gray-200 mb-2">
+                        {food.name}
+                      </h3>
+                      <p className="text-2xl font-bold text-yellow-400">
+                        ${food.price}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -100,39 +227,70 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="w-full lg:w-1/4">
-            <div className="bg-gray-800 rounded-xl shadow-lg p-6">
-              <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-4 mb-4">
-                <p className="text-gray-400 text-sm mb-1">Total Amount</p>
-                <p className="text-3xl font-bold text-white">$0.00</p>
-              </div>
+          <div className="w-full lg:w-1/4 space-y-6">
+           
+              <div  className="w-full">
+                <div className="bg-gray-800 rounded-xl shadow-lg p-6">
+                  <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-4 mb-4">
+                    <p className="text-gray-400 text-sm mb-1">Total Amount</p>
+                    <p className="text-3xl font-bold text-white">$0.00</p>
+                  </div>
+                  {saleTemps.map((item: any) => (
 
-              <div className="space-y-4">
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-gray-200 font-medium">Food Name</span>
-                    <span className="text-gray-400">x2</span>
+                  <div key={item.id} className="space-y-4 mb-4">
+                    <div className="bg-gray-700 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-gray-200 font-medium">
+                          {item.Food.name}
+                        </span>
+                        <span className="text-gray-400">{item.Food.price}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-400">
+                          {item.Food.price} x {item.qty}
+                        </span>
+                        <span className="text-yellow-400 font-semibold">
+                          {item.Food.price * item.qty}
+                        </span>
+                      </div>
+                                {/* Quantity control section */}
+                      <div className="mt-1">
+                        <div className="input-group">
+                          <button className="input-group-text btn btn-primary"
+                          onClick={()=> updateQty(item.id, item.qty -1)}>
+                            <i className="fa fa-minus"></i>
+                          </button>
+                          <input
+                            type="text"
+                            className="form-control text-center fw-bold"
+                            value={item.qty}
+                            disabled
+                          />
+                          <button className="input-group-text btn btn-primary"
+                          onClick={()=> updateQty(item.id, item.qty +1)}>
+                            <i className="fa fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex gap-2 mt-3">
+                        <button onClick={() => removeSaleTemp(item.id)}
+                                className="flex-1 px-3 py-2 bg-red-500 hover:bg-red-600
+                               text-white rounded-lg transition duration-200">
+                                <i className="fa fa-times mr-2">Cancel</i>
+                        </button>
+                        <button className="flex-1 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-200">
+                          <i className="fa fa-cog mr-2"></i>Edit
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400">$100 each</span>
-                    <span className="text-yellow-400 font-semibold">$200</span>
-                  </div>
-                  <div className="flex gap-2 mt-3">
-                    <button className="flex-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition duration-200">
-                      <i className="fa fa-times mr-2">Cancel</i>
-                    </button>
-                    <button className="flex-1 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-200">
-                      <i className="fa fa-cog mr-2"></i>Edit
-                    </button>
-                  </div>
+                ))}
                 </div>
               </div>
-
-              <button className="w-full mt-6 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition duration-200">
-                <i className="fa fa-check mr-2"></i>Complete Order
-              </button>
-            </div>
+           
           </div>
+
+
         </div>
       </div>
     </div>
