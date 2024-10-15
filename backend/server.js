@@ -49,6 +49,8 @@ app.get("/api/saletemp/list", (req, res) => SaleTempController.list(req, res));
 app.delete("/api/saletemp/remove/:id",(req, res)=>SaleTempController.remove(req, res));
 app.delete("/api/saletemp/removeAll",(req, res)=>SaleTempController.removeAll(req, res));
 app.put("/api/saletemp/updateQty", (req, res)=>SaleTempController.updateQty(req, res));
+app.post("/api/saletemp/generateSaleTempDetail", (req, res)=>SaleTempController.generateSaleTempDetail(req, res));
+app.get("/api/saletemp/info/:id", (req, res) => SaleTempController.info(req, res));
 
 
 app.listen(3001,()=>{
