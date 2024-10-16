@@ -55,6 +55,7 @@ app.put("/api/saletemp/selectTaste", (req, res) => SaleTempController.selectTast
 app.put("/api/saletemp/unselectTaste", (req, res) => SaleTempController.unselectTaste(req, res));
 app.put("/api/saletemp/selectSize", (req, res) => SaleTempController.selectSize(req, res));
 app.put("/api/saletemp/unselectSize", (req, res) => SaleTempController.unselectSize(req, res));
+app.post("/api/saletemp/createSaleTempDetail", (req, res) => SaleTempController.createSaleTempDetail(req, res));
 
 app.listen(3001,()=>{
     console.log("API Server running on port 3001");

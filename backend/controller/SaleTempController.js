@@ -64,6 +64,14 @@ module.exports = {
 
     remove: async (req, res) => {
         try{
+            const saleTempId = parseInt(req.params.id);
+
+            await prisma.saleTempDetail.deleteMany({
+                where: {
+                    saleTempId: saleTempId
+                }
+            })
+
             await prisma.saleTemp.delete({
                 where: {
                     id: parseInt(req.params.id)
@@ -76,67 +84,36 @@ module.exports = {
         }
     },
 
-    // removeAll: async (req, res) => {
-    //     try{
-    //         const saleTemp = await prisma.saleTemp.findFirst({
-    //             where: {
-    //                 userId: parseInt(req.body.userId),
-    //                 tableNo: parseInt(req.body.tableNo)
-    //             }
-    //         })
-    //         await prisma.saleTempDetail.deleteMany({
-    //             where: {
-    //                 saleTempId: saleTemp.id
-    //             }
-    //         })
-    //         await prisma.saleTemp.delete({
-    //             where: {
-    //                 id: saleTemp.id
-    //             }
-    //         })
-    //         return res.send({ message: 'success' })
-
-    //     }catch(e){
-    //         return res.status(500).send({ error: e.message })
-    //     }
-    // },
     removeAll: async (req, res) => {
-        try {
-            // Step 1: Find all saleTemp records for the given user and table
-            const saleTemps = await prisma.saleTemp.findMany({
+        try{
+            const saleTemp = await prisma.saleTemp.findMany({
                 where: {
                     userId: parseInt(req.body.userId),
                     tableNo: parseInt(req.body.tableNo)
                 }
-            });
-    
-            if (saleTemps.length === 0) {
-                return res.status(404).send({ message: 'No saleTemp records found' });
+            })
+            for (let i = 0; i < saleTemp.length; i++){
+                const item=saleTemp[i]
+                await prisma.saleTempDetail.deleteMany({
+                    where: {
+                        saleTempId: item.id
+                    }
+                })
             }
-    
-            // Step 2: Collect all saleTemp IDs
-            const saleTempIds = saleTemps.map((saleTemp) => saleTemp.id);
-    
-            // Step 3: Delete all saleTempDetail records associated with these saleTemp IDs
-            await prisma.saleTempDetail.deleteMany({
-                where: {
-                    saleTempId: { in: saleTempIds }  // Use 'in' to target all saleTemp IDs
-                }
-            });
-    
-            // Step 4: Delete all saleTemp records
+         
             await prisma.saleTemp.deleteMany({
                 where: {
-                    id: { in: saleTempIds }  // Use 'in' to target all saleTemp IDs
+                    userId: parseInt(req.body.userId),
+                    tableNo: parseInt(req.body.tableNo)
                 }
-            });
-    
-            return res.send({ message: 'All records successfully deleted' });
-    
-        } catch (e) {
-            return res.status(500).send({ error: e.message });
+            })
+            return res.send({ message: 'success' })
+
+        }catch(e){
+            return res.status(500).send({ error: e.message })
         }
     },
+    
     
     updateQty: async(req, res) => {
         try{
@@ -210,7 +187,8 @@ module.exports = {
                 },
                 SaleTempDetails: {
                     include: {
-                        Food: true
+                        Food: true,
+                        FoodSize: true,
                     },
                     orderBy: {
                         id: 'asc'
@@ -283,6 +261,38 @@ module.exports = {
         return res.status(500).send({ error: e.message })
     }
  },
+ createSaleTempDetail: async (req, res) => {
+    try {
+        const saleTempId = req.body.saleTempId
+        const saleTempDetail = await prisma.saleTempDetail.findFirst({
+            where: {
+                saleTempId: saleTempId
+            }
+        })
+        await prisma.saleTempDetail.create({
+            data: {
+                saleTempId: saleTempDetail.saleTempId,
+                foodId: saleTempDetail.foodId
+            }
+        })
+        const countSaleTempDetail = await prisma.saleTempDetail.count({
+            where: {
+                saleTempId: saleTempId
+            }
+        })
+        await prisma.saleTemp.update({
+            where: {
+                id: saleTempId
+            },
+            data: {
+                qty: countSaleTempDetail
+            }
+        })
+        return res.send({ message: 'success' })
+    } catch (e) {
+        return res.status(500).send({ error: e.message })
+    }
+}
 
 
 
