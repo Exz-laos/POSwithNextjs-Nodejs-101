@@ -181,7 +181,7 @@ module.exports = {
  },
   info: async(req, res) => {
     try{
-        const saleTemp = await prisma.saleTemp.findMany({
+        const saleTemp = await prisma.saleTemp.findFirst({
             where: {
                 id: parseInt(req.params.id)
             },
@@ -222,7 +222,69 @@ module.exports = {
     }catch(e){
         return res.status(500).send({ error: e.message })
     }
- }
+ },
+ selectTaste: async(req, res) => {
+    try{
+       await prisma.saleTempDetail.update({
+            where: {
+                id: req.body.saleTempDetailId
+            },
+            data:{
+                tastedId: req.body.tasteId // model : frontend
+            }
+        })
+        return res.send({ message: 'success' })
+    }catch(e){
+        return res.status(500).send({ error: e.message })
+    }
+ },
+ unselectTaste: async(req, res) => {
+    try{
+       await prisma.saleTempDetail.update({
+            where: {
+                id: req.body.saleTempDetailId
+            },
+            data:{
+                tastedId: null
+            }
+        })
+        return res.send({ message: 'success' })
+    }catch(e){
+        return res.status(500).send({ error: e.message })
+    }
+ },
+ selectSize: async(req, res) => {
+    try{
+       await prisma.saleTempDetail.update({
+            where: {
+                id: req.body.saleTempDetailId
+            },
+            data:{
+                foodSizeId: req.body.sizeId // model : frontend
+            }
+        })
+        return res.send({ message: 'success' })
+    }catch(e){
+        return res.status(500).send({ error: e.message })
+    }
+ },
+ unselectSize: async(req, res) => {
+    try{
+       await prisma.saleTempDetail.update({
+            where: {
+                id: req.body.saleTempDetailId
+            },
+            data:{
+                foodSizeId: null
+            }
+        })
+        return res.send({ message: 'success' })
+    }catch(e){
+        return res.status(500).send({ error: e.message })
+    }
+ },
+
+
 
 
 

@@ -51,7 +51,10 @@ app.delete("/api/saletemp/removeAll",(req, res)=>SaleTempController.removeAll(re
 app.put("/api/saletemp/updateQty", (req, res)=>SaleTempController.updateQty(req, res));
 app.post("/api/saletemp/generateSaleTempDetail", (req, res)=>SaleTempController.generateSaleTempDetail(req, res));
 app.get("/api/saletemp/info/:id", (req, res) => SaleTempController.info(req, res));
-
+app.put("/api/saletemp/selectTaste", (req, res) => SaleTempController.selectTaste(req, res));
+app.put("/api/saletemp/unselectTaste", (req, res) => SaleTempController.unselectTaste(req, res));
+app.put("/api/saletemp/selectSize", (req, res) => SaleTempController.selectSize(req, res));
+app.put("/api/saletemp/unselectSize", (req, res) => SaleTempController.unselectSize(req, res));
 
 app.listen(3001,()=>{
     console.log("API Server running on port 3001");

@@ -195,6 +195,75 @@ export default function Page() {
     }
 
   }
+  const selectTaste = async (tasteId: number, saleTempDetailId: number, saleTempId: number) => {
+    try{
+      const payload = {
+        saleTempDetailId: saleTempDetailId,
+        tasteId: tasteId,
+      }
+      await axios.put(config.apiServer + "/api/saletemp/selectTaste", payload);
+      fetchDataSaleTempInfo(saleTempId);
+    }catch(e: any){
+      Swal.fire({
+        title: "error",
+        text: e.message,
+        icon: "error",
+      })
+    }
+  }
+  
+  const unSelectTaste = async (saleTempDetailId: number, saleTempId: number) => {
+    try{
+
+      const payload = {
+        saleTempDetailId: saleTempDetailId
+      }
+
+      await axios.put(config.apiServer + "/api/saletemp/unselectTaste", payload);
+      fetchDataSaleTempInfo(saleTempId);
+
+    }catch(e: any){
+      Swal.fire({
+        title: "error",
+        text: e.message,
+        icon: "error",
+      })
+
+    }
+  }
+  const selectSize = async (sizeId: number, saleTempDetailId: number, saleTempId: number) => {
+    try{
+      const payload = {
+        saleTempDetailId: saleTempDetailId,
+        sizeId: sizeId,
+      }
+      await axios.put(config.apiServer + "/api/saletemp/selectSize", payload);
+      fetchDataSaleTempInfo(saleTempId);
+    }catch(e: any){
+      Swal.fire({
+        title: "error",
+        text: e.message,
+        icon: "error",
+      })
+    }
+  }
+
+  const unSelectSize = async (saleTempDetailId: number, saleTempId: number) => {
+    try{
+      const payload = {
+        saleTempDetailId: saleTempDetailId
+      }
+      await axios.put(config.apiServer + "/api/saletemp/unselectSize", payload);
+      fetchDataSaleTempInfo(saleTempId);
+
+    }catch(e: any){
+      Swal.fire({
+        title: "error",
+        text: e.message,
+        icon: "error",
+      })
+    }
+  }
 
 
   return (
@@ -362,11 +431,60 @@ export default function Page() {
             <tr>
               <th style={{ width: "60px" }}></th>
               <th>menu name</th>
-              <th style={{ width: "200px" }}>flavor</th>
-              <th style={{ width: "200px" }}>size</th>
+              <th className="text-center" style={{ width: "300px" }}>flavor</th>
+              <th className="text-center" style={{ width: "300px" }}>size</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+              {saleTempDetails.map((item: any) => (
+                <tr key={item.id}>
+                  <td className="text-center">
+                    <button className="btn btn-danger">
+                      <i className="fa fa-times"></i></button> </td>
+                  <td>{item.Food.name}</td>
+
+                  <td className="text-center">
+
+                    {tastes.map((taste: any) => 
+                      item.tastedId === taste.id ? 
+                      <button onClick={() => unSelectTaste(item.id, item.saleTempId)}
+                       className="btn btn-danger me-1" key={taste.id}>{taste.name}</button>
+                      :
+                      (
+                        <button 
+                            onClick={() => selectTaste(taste.id, item.id, item.saleTempId)}
+                            className="btn btn-outline-danger me-1" 
+                            key={taste.id}>
+                              {taste.name}
+              
+                        </button>
+                      )
+                    )}
+                  </td>
+                  <td className="text-center">
+                    {sizes.map((size: any) => 
+                       size.moneyAdded>0 ?
+    
+                          item.foodSizeId === size.id ? 
+                          <button 
+                          onClick={() => unSelectSize(item.id, item.saleTempId)}
+                          className="btn btn-success me-1" key={size.id}>+{size.moneyAdded} {size.name}</button>
+                          :
+                          (
+                            <button 
+                                onClick={() => selectSize(size.id, item.id, item.saleTempId)}
+                                className="btn btn-outline-success me-1" 
+                                key={size.id}>+{size.moneyAdded} {size.name}
+                  
+                            </button>
+                          )
+                        :<></>
+                      )}
+                  </td>
+                </tr>
+              ))
+             }
+          </tbody>
         </table>
       </MyModal>
     </div>
