@@ -2,7 +2,7 @@
 
 import config from "@/app/config";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import MyModal from "../components/MyModal";
 
@@ -16,6 +16,8 @@ export default function Page() {
   const [saleTempDetails, setSaleTempDetails] = useState([]);
   const [amountAdded, setAmountAdded] = useState(0);
   const [saleTempId, setSaleTempId] = useState(0);
+  const [payType,setPayType] = useState('cash');
+  const [inputMoney, setInputMoney]= useState(0);
 
   useEffect(() => {
     getFoods();
@@ -94,7 +96,6 @@ export default function Page() {
       });
 
       setAmountAdded(sum);
-      
     } catch (e: any) {
       Swal.fire({
         title: "error",
@@ -175,8 +176,6 @@ export default function Page() {
     }
   };
 
- 
-
   const fetchDataSaleTempInfo = async (saleTempId: number) => {
     try {
       const res = await axios.get(
@@ -185,7 +184,6 @@ export default function Page() {
       setSaleTempDetails(res.data.results.SaleTempDetails);
       setTastes(res.data.results.Food?.FoodType?.Tastes || []);
       setSizes(res.data.results.Food?.FoodType?.FoodSizes || []);
-    
     } catch (e: any) {
       Swal.fire({
         title: "error",
@@ -196,14 +194,14 @@ export default function Page() {
   };
 
   const sumMoneyAdded = (saleTempDetails: any) => {
-    let sum = 0 ;
+    let sum = 0;
 
-    for (let i=0; i< saleTempDetails.length; i++){
+    for (let i = 0; i < saleTempDetails.length; i++) {
       const item = saleTempDetails[i];
       sum += item.FoodSize?.moneyAdded || 0;
     }
     return sum;
-  }
+  };
   const generateSaleTempDetail = async (saleTempId: number) => {
     try {
       const payload = {
@@ -305,23 +303,56 @@ export default function Page() {
     }
   };
 
-  const createSaleTempDetail = async()=> {
-    try{
-      const payload={
-        saleTempId: saleTempId
-      }
-      await axios.post(config.apiServer + "/api/saletemp/createSaleTempDetail", payload);
+  const createSaleTempDetail = async () => {
+    try {
+      const payload = {
+        saleTempId: saleTempId,
+      };
+      await axios.post(
+        config.apiServer + "/api/saletemp/createSaleTempDetail",
+        payload
+      );
       await fetchDataSaleTemp();
       fetchDataSaleTempInfo(saleTempId);
-
-    }catch(e:any){
+    } catch (e: any) {
       Swal.fire({
         title: "error",
         text: e.message,
         icon: "error",
-      })
+      });
     }
+  };
+
+  const removeSaleTempDetail = async (saleTempDetailId: number) => {
+    try {
+      const payload = {
+        saleTempDetailId: saleTempDetailId,
+      };
+      await axios.delete(
+        config.apiServer + "/api/saletemp/removeSaleTempDetail",
+        { data: payload }
+      );
+      await fetchDataSaleTemp();
+      fetchDataSaleTempInfo(saleTempId);
+    } catch (e: any) {
+      Swal.fire({
+        title: "error",
+        text: e.message,
+        icon: "error",
+      });
+    }
+  };
+  const ButtonClass = (isActive: boolean) => `
+  ${isActive ? "bg-gray-700 text-white" : "bg-gray-800 text-gray-300"}
+  hover:bg-gray-600 font-medium py-2 px-4 rounded-md transition duration-300 ease-in-out
+  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500
+`;
+const change = useMemo(() => {
+  if (inputMoney > (amount+amountAdded)) {
+    return inputMoney - (amount+amountAdded);
   }
+  return 0;
+}, [inputMoney, (amount+amountAdded)]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6">
@@ -407,10 +438,24 @@ export default function Page() {
               <div className="bg-gray-800 rounded-xl shadow-lg p-6">
                 <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-4 mb-4">
                   <p className="text-gray-400 text-sm mb-1">Total Amount</p>
-                  <p className="text-3xl font-bold text-white">
+                  <p className="text-3xl font-bold text-yellow-400">
                     {(amount + amountAdded).toLocaleString("th-TH")}
                   </p>
                 </div>
+
+                {amount > 0 ? (
+                  <button 
+                  data-bs-toggle='modal'
+                  data-bs-target="#modalSale"
+                  className="bg-green-500 hover:bg-green-600 
+                  text-white font-bold py-3 px-4 rounded-lg w-full text-lg mb-2">
+               <i className="fa fa-check me-2"></i>
+               End of sale
+                  </button>
+                ) : (
+                  <></>
+                )}
+
                 {saleTemps.map((item: any) => (
                   <div key={item.id} className="space-y-4 mb-4">
                     <div className="bg-gray-700 rounded-lg p-4">
@@ -488,8 +533,10 @@ export default function Page() {
       >
         <div className="bg-gray-900 text-gray-100 p-6 rounded-lg shadow-lg">
           <div className="mb-4">
-            <button onClick={() => createSaleTempDetail()}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center">
+            <button
+              onClick={() => createSaleTempDetail()}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center"
+            >
               <svg
                 className="w-5 h-5 mr-2"
                 fill="none"
@@ -530,21 +577,11 @@ export default function Page() {
                     className="border-b border-gray-700 hover:bg-gray-800 transition duration-300 ease-in-out"
                   >
                     <td className="px-6 py-4 text-center">
-                      <button className="text-red-500 hover:text-white border border-red-500 hover:bg-red-600 font-medium rounded-lg text-sm px-2.5 py-2 text-center transition duration-300 ease-in-out">
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M6 18L18 6M6 6l12 12"
-                          ></path>
-                        </svg>
+                      <button
+                        onClick={() => removeSaleTempDetail(item.id)}
+                        className="text-red-500 hover:text-white border border-red-500 hover:bg-red-600 font-medium rounded-lg text-sm px-2.5 py-2 text-center transition duration-300 ease-in-out"
+                      >
+                        <i className="fa fa-trash"></i>
                       </button>
                     </td>
                     <td className="px-6 py-4 font-medium whitespace-nowrap">
@@ -557,7 +594,7 @@ export default function Page() {
                             onClick={() =>
                               unSelectTaste(item.id, item.saleTempId)
                             }
-                            className="bg-red-600 text-white hover:bg-red-700 font-medium rounded-lg text-sm px-3 py-1.5 mr-1 mb-1 transition duration-300 ease-in-out"
+                            className="bg-orange-500 text-white hover:bg-orange-700 font-medium rounded-lg text-sm px-3 py-1.5 mr-1 mb-1 transition duration-300 ease-in-out"
                             key={taste.id}
                           >
                             {taste.name}
@@ -567,7 +604,7 @@ export default function Page() {
                             onClick={() =>
                               selectTaste(taste.id, item.id, item.saleTempId)
                             }
-                            className="text-red-500 hover:text-white border border-red-500 hover:bg-red-600 font-medium rounded-lg text-sm px-3 py-1.5 mr-1 mb-1 transition duration-300 ease-in-out"
+                            className="text-orange-500 hover:text-white border border-orange-500 hover:bg-orange-600 font-medium rounded-lg text-sm px-3 py-1.5 mr-1 mb-1 transition duration-300 ease-in-out"
                             key={taste.id}
                           >
                             {taste.name}
@@ -608,6 +645,87 @@ export default function Page() {
             </table>
           </div>
         </div>
+      </MyModal>
+
+      <MyModal   
+        id="modalSale"
+        title="End of Sale"
+        modalSize="modal-lg"
+        modalColor="bg-dark">
+         <div className="bg-gray-900 text-gray-100 p-6 rounded-lg shadow-lg space-y-6">
+      <div className="grid grid-cols-2 gap-4">
+        <button 
+          className={ButtonClass(payType === 'cash')}
+          onClick={() => setPayType('cash')}
+        >
+          Cash
+        </button>
+        <button 
+          className={ButtonClass(payType === 'transfer')}
+          onClick={() => setPayType('transfer')}
+        >
+          E-money
+        </button>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-400 mb-2">Total Amount</label>
+        <input 
+          className="w-full bg-gray-800 text-3xl font-bold text-yellow-400 text-right py-3 px-4 rounded-md"
+          value={(amount + amountAdded).toLocaleString('th-TH')}
+          disabled
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-400 mb-2">Get money</label>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[50, 100, 500, 1000].map((value) => (
+            <button 
+              key={value}
+              className={ButtonClass(inputMoney === value)}
+              onClick={() => setInputMoney(value)}
+            >
+              {value}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <input 
+          className="w-full bg-gray-800 text-green-600 text-right text-lg py-2 px-4 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          placeholder="0.00"
+          value={inputMoney || ''}
+          onChange={(e) => setInputMoney(Number(e.target.value))}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-400 mb-2">Change</label>
+        <input 
+  className="w-full bg-gray-800 text-red-600 text-right text-xl py-3 px-4 rounded-md"
+  value={change.toLocaleString('th-TH')}
+  
+/>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <button 
+          onClick={() => setInputMoney(amount + amountAdded)}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500"
+        >
+          No change
+        </button>
+        <button 
+          className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-green-500"
+        >
+          End sale
+        </button>
+      </div>
+    </div>
+
+      
       </MyModal>
     </div>
   );
