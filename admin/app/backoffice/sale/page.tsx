@@ -354,6 +354,23 @@ const change = useMemo(() => {
   return 0;
 }, [inputMoney, (amount+amountAdded)]);
 
+const printBillBeforePay = async()=>{
+  try{
+    const payload = {
+      tableNo: table,
+      userId: Number(localStorage.getItem("next_user_id")),
+    }
+    await axios.post(config.apiServer+ '/api/saleTemp/printBillBeforePay',payload)
+
+  }catch(e: any){
+    Swal.fire({
+      title: "error",
+      text: e.message,
+      icon: "error",
+    })
+  }
+}
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6">
       <div className="max-w-7xl mx-auto">
@@ -399,38 +416,56 @@ const change = useMemo(() => {
             >
               <i className="fa fa-trash mr-2"></i>Clear
             </button>
+            {amount>0
+            ? <button
+         
+            onClick={() => printBillBeforePay()}
+            className="px-4 py-2 bg-teal-500 hover:bg-teal-700
+              text-white rounded-lg transition duration-200"
+          >
+            <i className="fa fa-money-bill mr-2"></i>Bill sale
+          </button>
+          :<></>
+            
+            }
           </div>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="w-full lg:w-3/4">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {foods.map((food: any) => (
-                <div key={food.id} className="group cursor-pointer">
-                  <div
-                    className="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300"
-                    onClick={() => sale(food.id)}
-                  >
-                    <div className="relative">
-                      <img
-                        src={config.apiServer + "/uploads/" + food.img}
-                        className="w-full h-48 object-cover transform group-hover:scale-105 transition duration-300"
-                        alt={food.name}
-                      />
-                      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-40 transition duration-300"></div>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold text-gray-200 mb-2">
-                        {food.name}
-                      </h3>
-                      <p className="text-2xl font-bold text-yellow-400">
-                        ${food.price}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  {foods.map((food: any) => (
+    <div key={food.id} className="group cursor-pointer">
+      <div
+        className="bg-gradient-to-b from-black via-gray-900 to-gray-800 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-transform transform hover:scale-105 duration-300"
+        onClick={() => sale(food.id)}
+      >
+        <div className="relative">
+          <img
+            src={config.apiServer + "/uploads/" + food.img}
+            className="w-full h-48 object-cover transform group-hover:scale-110 transition duration-300"
+            alt={food.name}
+          />
+          {/* Dark overlay with gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+          {/* Subtle glowing effect */}
+          <div className="absolute inset-0 border-2 border-transparent group-hover:border-yellow-500 rounded-xl transition duration-300"></div>
+        </div>
+        <div className="p-4">
+          {/* Title with soft glowing effect */}
+          <h3 className="text-lg font-semibold text-gray-100 mb-2 group-hover:text-yellow-400 transition duration-300">
+            {food.name}
+          </h3>
+          {/* Price with stronger accent */}
+          <p className="text-2xl font-bold text-yellow-400 group-hover:text-yellow-300 transition duration-300">
+            ${food.price}
+          </p>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
           </div>
 
           <div className="w-full lg:w-1/4 space-y-6">

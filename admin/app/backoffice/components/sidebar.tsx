@@ -42,7 +42,7 @@ export default function Sidebar() {
   };
 
   return (
-<aside className="main-sidebar sidebar-dark-primary elevation-4 bg-gradient-to-b from-gray-900 via-gray-700 to-gray-800">
+<aside className="main-sidebar sidebar-dark-primary elevation-4 bg-gradient-to-b from-gray-900 via-gray-800 to-black">
   {/* Brand Section */}
   <a href="#" className="brand-link d-flex align-items-center p-3 bg-primary">
     <FaStoreAlt className="me-2 fs-4 text-white" />
@@ -69,25 +69,25 @@ export default function Sidebar() {
     <ul className="nav nav-pills nav-sidebar flex-column" role="menu">
       <li className="nav-item">
         <Link href="/backoffice/sale" className="nav-link text-white d-flex align-items-center">
-          <FaCashRegister className="nav-icon me-2" />  
+          <FaCashRegister className="nav-icon me-2" />  {/* Changed to represent "Sale" */}
           <p>Sale</p>
         </Link>
       </li>
       <li className="nav-item">
         <Link href="/backoffice/food-type" className="nav-link text-white d-flex align-items-center">
-          <GiHotMeal className="nav-icon me-2" />
+          <GiHotMeal className="nav-icon me-2" />  {/* Changed to represent "Food Types" */}
           <p>Food types</p>
         </Link>
       </li>
       <li className="nav-item">
         <Link href="/backoffice/food-size" className="nav-link text-white d-flex align-items-center">
-          <FaRulerCombined className="nav-icon me-2" />
+          <FaRulerCombined className="nav-icon me-2" />  {/* Changed to represent "Food Size" */}
           <p>Food size</p>
         </Link>
       </li>
       <li className="nav-item">
         <Link href="/backoffice/food-taste" className="nav-link text-white d-flex align-items-center">
-          <GiForkKnifeSpoon className="nav-icon me-2" />
+          <GiForkKnifeSpoon className="nav-icon me-2" />  {/* Changed to represent "Food Taste" */}
           <p>Food taste</p>
         </Link>
       </li>
@@ -97,11 +97,18 @@ export default function Sidebar() {
           <p>Food</p>
         </Link>
       </li>
+
+      <li className="nav-item">
+        <Link href="/backoffice/organization" className="nav-link text-white d-flex align-items-center">
+          <FaStoreAlt className="nav-icon me-2" />
+          <p>My Store</p>
+        </Link>
+      </li>
     </ul>
   </nav>
 </aside>
 
-
   
   );
 }
+

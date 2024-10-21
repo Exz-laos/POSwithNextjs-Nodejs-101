@@ -16,6 +16,7 @@ const FoodSizeController = require("./controller/FoodSizeController");
 const TasteController = require("./controller/TasteController");
 const FoodController = require("./controller/FoodController");
 const SaleTempController = require("./controller/SaleTempController");
+const OrganizationController = require("./controller/OrganizationController");
 
 
 //admin
@@ -57,6 +58,11 @@ app.put("/api/saletemp/selectSize", (req, res) => SaleTempController.selectSize(
 app.put("/api/saletemp/unselectSize", (req, res) => SaleTempController.unselectSize(req, res));
 app.post("/api/saletemp/createSaleTempDetail", (req, res) => SaleTempController.createSaleTempDetail(req, res));
 app.delete("/api/saletemp/removeSaleTempDetail",(req, res)=>SaleTempController.removeSaleTempDetail(req, res));
+
+//organization
+app.post("/api/organization/create", (req, res) => OrganizationController.create(req, res));
+app.get("/api/organization/info", (req, res) => OrganizationController.info(req, res));
+app.post("/api/organization/upload", (req, res) => OrganizationController.upload(req, res));
 
 app.listen(3001,()=>{
     console.log("API Server running on port 3001");

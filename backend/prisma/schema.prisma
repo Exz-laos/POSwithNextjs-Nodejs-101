@@ -74,7 +74,7 @@ model SaleTemp {
   foodId          Int
   qty             Int
   SaleTempDetails SaleTempDetail[]
-  Food Food @relation(fields: [foodId], references: [id])
+  Food            Food             @relation(fields: [foodId], references: [id])
 }
 
 model SaleTempDetail {
@@ -88,3 +88,17 @@ model SaleTempDetail {
   FoodSize   FoodSize? @relation(fields: [foodSizeId], references: [id])
   SaleTemp   SaleTemp  @relation(fields: [saleTempId], references: [id])
 }
+
+model Organization {
+  id        Int    @id() @default(autoincrement())
+  name      String
+  phone     String
+  address   String
+  email     String
+  website   String
+  promptpay String
+  logo      String
+  taxCode   String
+}
+
+

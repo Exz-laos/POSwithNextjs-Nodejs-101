@@ -38,3 +38,6 @@ const Modal: React.FC<ModalProps> = ({ id, title, modalSize, modalColor, childre
 };
 
 export default Modal;
+
+
+
