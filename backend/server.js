@@ -58,6 +58,7 @@ app.put("/api/saletemp/selectSize", (req, res) => SaleTempController.selectSize(
 app.put("/api/saletemp/unselectSize", (req, res) => SaleTempController.unselectSize(req, res));
 app.post("/api/saletemp/createSaleTempDetail", (req, res) => SaleTempController.createSaleTempDetail(req, res));
 app.delete("/api/saletemp/removeSaleTempDetail",(req, res)=>SaleTempController.removeSaleTempDetail(req, res));
+app.post("/api/saletemp/printBillBeforePay", (req, res) => SaleTempController.printBillBeforePay(req, res));
 
 //organization
 app.post("/api/organization/create", (req, res) => OrganizationController.create(req, res));

@@ -18,6 +18,7 @@ export default function Page() {
   const [saleTempId, setSaleTempId] = useState(0);
   const [payType,setPayType] = useState('cash');
   const [inputMoney, setInputMoney]= useState(0);
+  const [billUrl,setBillUrl]=useState('');
 
   useEffect(() => {
     getFoods();
@@ -360,7 +361,13 @@ const printBillBeforePay = async()=>{
       tableNo: table,
       userId: Number(localStorage.getItem("next_user_id")),
     }
-    await axios.post(config.apiServer+ '/api/saleTemp/printBillBeforePay',payload)
+    const res = await axios.post(config.apiServer+ '/api/saletemp/printBillBeforePay',payload);
+    setTimeout(()=>{
+      setBillUrl(res.data.fileName);
+      const button = document.getElementById("btnPrint") as HTMLButtonElement;
+      button.click();
+    })
+
 
   }catch(e: any){
     Swal.fire({
@@ -761,6 +768,13 @@ const printBillBeforePay = async()=>{
     </div>
 
       
+      </MyModal>
+
+      <button id="btnPrint" style={{display: 'none'}} data-bs-toggle="modal" data-bs-target="#modalPrint"></button>
+      <MyModal id="modalPrint" title="Bill printing"  modalColor="bg-dark">
+        {billUrl && 
+           <iframe src={config.apiServer + '/' + billUrl} style={{width: '100%', height: '600px'}}></iframe>}
+
       </MyModal>
     </div>
   );
