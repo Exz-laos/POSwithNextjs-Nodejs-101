@@ -17,6 +17,7 @@ const TasteController = require("./controller/TasteController");
 const FoodController = require("./controller/FoodController");
 const SaleTempController = require("./controller/SaleTempController");
 const OrganizationController = require("./controller/OrganizationController");
+const BillSaleController = require("./controller/BillSaleController");
 
 
 //admin
@@ -66,6 +67,10 @@ app.post("/api/saletemp/printBillAfterPay", (req, res) => SaleTempController.pri
 app.post("/api/organization/create", (req, res) => OrganizationController.create(req, res));
 app.get("/api/organization/info", (req, res) => OrganizationController.info(req, res));
 app.post("/api/organization/upload", (req, res) => OrganizationController.upload(req, res));
+
+//billsale
+app.post("/api/billsale/list", (req, res) => BillSaleController.list(req, res));
+app.delete("/api/billsale/remove/:id",(req, res)=>BillSaleController.remove(req, res));
 
 app.listen(3001,()=>{
     console.log("API Server running on port 3001");

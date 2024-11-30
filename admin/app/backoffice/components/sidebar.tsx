@@ -7,6 +7,7 @@ import Link from "next/link";
 import { FaUser, FaSignOutAlt, FaRulerCombined , FaStoreAlt,FaCashRegister } from "react-icons/fa";
 import { IoFastFoodOutline } from "react-icons/io5";
 import { GiHotMeal,GiForkKnifeSpoon  } from "react-icons/gi";
+import { TbReportAnalytics } from "react-icons/tb";
 
 export default function Sidebar() {
   const [name, setName] = useState("");
@@ -104,6 +105,14 @@ export default function Sidebar() {
           <p>My Store</p>
         </Link>
       </li>
+
+      <li className="nav-item">
+        <Link href="/backoffice/report-bill-sale" className="nav-link text-white d-flex align-items-center">
+          <TbReportAnalytics  className="nav-icon me-2" />
+          <p>My Report</p>
+        </Link>
+      </li>
+
     </ul>
   </nav>
 </aside>

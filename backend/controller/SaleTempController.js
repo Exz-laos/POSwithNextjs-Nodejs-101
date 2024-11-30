@@ -438,7 +438,8 @@ endSale: async (req, res) => {
             include: {
                 SaleTempDetails: {
                     include: {
-                        Food: true
+                        Food: true,
+                        FoodSize: true
                     }
                 },
                 Food: true
@@ -471,8 +472,9 @@ endSale: async (req, res) => {
                             billSaleId: billSale.id,
                             foodId: detail.foodId,
                             price: detail.Food.price,
-                            moneyAdded: detail.moneyAdded,
-                            tastedId: detail.tastedId
+                            moneyAdded: detail.FoodSize?.moneyAdded,
+                            tastedId: detail.tastedId,
+                            foodSizeId: detail.foodSizeId
                         }
                     })
                 }
@@ -600,7 +602,7 @@ printBillAfterPay: async (req, res) => {
         doc.moveDown();
 
         const y = doc.y;
-        doc.fontSize(4);
+        doc.fontSize(3);
         doc.text('Food', padding, y);
         doc.text('Price', padding+18, y, {align:'right', width: 20});
         doc.text('Qty', padding+36, y, {align:'right', width: 20});
@@ -617,8 +619,18 @@ printBillAfterPay: async (req, res) => {
             const y = doc.y;
             let name = item.Food.name;
             if (item.foodSizeId != null) name += ` (${item.FoodSize.name}) +${item.FoodSize.moneyAdded}`;
+            if (name.length > 20) {
+                name = name.slice(0, 17) + '...'; // Adjust number based on width
+            }
+            
 
-            doc.text(name, padding, y);
+          //  doc.text(name, padding, y);
+            doc.text(name, padding, y, {
+                width: 50, // Limit column width
+                height: 12, // Optional, for wrapping within height
+                ellipsis: true, // Prevents overflow
+            });
+        
             doc.text(item.Food.price, padding + 18, y, { align: 'right', width: 20 });
             doc.text(1, padding + 36, y, { align: 'right', width: 20 });
             doc.text(item.Food.price + item.moneyAdded, padding + 55, y, { align: 'right' });
