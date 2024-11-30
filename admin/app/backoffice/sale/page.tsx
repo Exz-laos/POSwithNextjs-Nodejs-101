@@ -377,6 +377,64 @@ const printBillBeforePay = async()=>{
     })
   }
 }
+const endSale = async()=>{
+  try{
+    //confirm for end sale
+    const button = await Swal.fire({
+      title: "end sale comfirm",
+      text: "Do you want to end of sale",
+      icon: 'question',
+      showCancelButton: true,
+      showConfirmButton: true
+
+    });
+    if (button.isConfirmed){
+      const payload={
+        tableNo:table,
+        userId:Number(localStorage.getItem('next_user_id')),
+        payType: payType,
+        inputMoney: inputMoney,
+        amount: amount + amountAdded,
+        returnMoney: inputMoney-(amount + amountAdded)
+      }
+      await axios.post(config.apiServer+'/api/saletemp/endSale', payload);
+      fetchDataSaleTemp();
+
+      document.getElementById('modalSale_btnClose')?.click();
+      printBillAfterPay();
+    }
+
+  }catch(e: any){
+    Swal.fire({
+      title: 'error',
+      text: e.message,
+      icon: 'error',
+    })
+  }
+}
+const printBillAfterPay = async()=>{
+  try{
+    const payload = {
+      tableNo: table,
+      userId: Number(localStorage.getItem("next_user_id")),
+    }
+
+    const res = await axios.post(config.apiServer + '/api/saletemp/printBillAfterPay',payload);
+
+    setTimeout(() => {
+      setBillUrl(res.data.fileName);
+
+      const button = document.getElementById("btnPrint") as HTMLButtonElement;
+      button.click();
+    }, 500);
+  }catch(e: any) {
+    Swal.fire({
+      title: "error",
+      text: e.message,
+      icon: "error",
+    })
+  }
+}
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6">
@@ -760,6 +818,8 @@ const printBillBeforePay = async()=>{
           No change
         </button>
         <button 
+          disabled={inputMoney-(amount + amountAdded)< 0}
+          onClick={()=> endSale()}
           className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-green-500"
         >
           End sale

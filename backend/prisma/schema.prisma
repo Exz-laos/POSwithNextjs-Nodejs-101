@@ -14,12 +14,13 @@ datasource db {
 }
 
 model User {
-  id       Int    @id() @default(autoincrement())
+  id       Int        @id() @default(autoincrement())
   name     String
   username String
   password String
-  level    String @default("admin")
-  status   String @default("use")
+  level    String     @default("admin")
+  status   String     @default("use")
+  BillSale BillSale[]
 }
 
 model FoodType {
@@ -41,6 +42,7 @@ model FoodSize {
   status          String           @default("use")
   FoodType        FoodType         @relation(fields: [foodTypeId], references: [id])
   SaleTempDetails SaleTempDetail[]
+  BillSaleDetails BillSaleDetail[]
 }
 
 model Taste {
@@ -51,6 +53,7 @@ model Taste {
   foodTypeId      Int
   FoodType        FoodType         @relation(fields: [foodTypeId], references: [id])
   SaleTempDetails SaleTempDetail[]
+  BillSaleDetails BillSaleDetail[]
 }
 
 model Food {
@@ -65,6 +68,7 @@ model Food {
   FoodType        FoodType         @relation(fields: [foodTypeId], references: [id])
   SaleTempDetails SaleTempDetail[]
   SaleTemps       SaleTemp[]
+  BillSaleDetails BillSaleDetail[]
 }
 
 model SaleTemp {
@@ -101,4 +105,31 @@ model Organization {
   taxCode   String
 }
 
+model BillSale {
+  id              Int              @id() @default(autoincrement())
+  createdDate     DateTime         @default(now())
+  payDate         DateTime         @default(now())
+  amount          Int
+  payType         String
+  userId          Int
+  inputMoney      Int
+  returnMoney     Int
+  tableNo         Int
+  status          String           @default("use")
+  User            User             @relation(fields: [userId], references: [id])
+  BillSaleDetails BillSaleDetail[]
+}
 
+model BillSaleDetail {
+  id         Int      @id() @default(autoincrement())
+  billSaleId Int
+  foodId     Int
+  foodSizeId Int?
+  tastedId   Int?
+  moneyAdded Int?
+  price      Int?
+  BillSale   BillSale @relation(fields: [billSaleId], references: [id])
+  Food       Food     @relation(fields: [foodId], references: [id])
+  FoodSize FoodSize? @relation(fields: [foodSizeId], references: [id])
+  Taste Taste? @relation(fields: [tastedId], references: [id])
+}
