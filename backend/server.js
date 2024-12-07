@@ -18,6 +18,8 @@ const FoodController = require("./controller/FoodController");
 const SaleTempController = require("./controller/SaleTempController");
 const OrganizationController = require("./controller/OrganizationController");
 const BillSaleController = require("./controller/BillSaleController");
+const { report } = require("process");
+const ReportController = require("./controller/ReportController");
 
 
 //admin
@@ -71,6 +73,10 @@ app.post("/api/organization/upload", (req, res) => OrganizationController.upload
 //billsale
 app.post("/api/billsale/list", (req, res) => BillSaleController.list(req, res));
 app.delete("/api/billsale/remove/:id",(req, res)=>BillSaleController.remove(req, res));
+
+//
+app.post('/api/report/sumPerDayInYearAndMonth', (req, res) => ReportController.sumPerDayInYearAndMonth(req, res));
+
 
 app.listen(3001,()=>{
     console.log("API Server running on port 3001");

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import config from "@/app/config";
 import Swal from "sweetalert2";
 import Link from "next/link";
-import { FaUser, FaSignOutAlt, FaRulerCombined , FaStoreAlt,FaCashRegister } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaRulerCombined , FaStoreAlt,FaCashRegister,FaCalendarDay  } from "react-icons/fa";
 import { IoFastFoodOutline } from "react-icons/io5";
 import { GiHotMeal,GiForkKnifeSpoon  } from "react-icons/gi";
 import { TbReportAnalytics } from "react-icons/tb";
@@ -110,6 +110,13 @@ export default function Sidebar() {
         <Link href="/backoffice/report-bill-sale" className="nav-link text-white d-flex align-items-center">
           <TbReportAnalytics  className="nav-icon me-2" />
           <p>My Report</p>
+        </Link>
+      </li>
+
+      <li className="nav-item">
+        <Link href="/backoffice/report-sum-sale-per-day" className="nav-link text-white d-flex align-items-center">
+          <FaCalendarDay   className="nav-icon me-2" />
+          <p>Sales/day</p>
         </Link>
       </li>
 
