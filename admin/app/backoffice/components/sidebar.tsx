@@ -8,7 +8,7 @@ import { FaUser, FaSignOutAlt, FaRulerCombined , FaStoreAlt,FaCashRegister,FaCal
 import { IoFastFoodOutline } from "react-icons/io5";
 import { GiHotMeal,GiForkKnifeSpoon  } from "react-icons/gi";
 import { TbReportAnalytics } from "react-icons/tb";
-
+import { BsCalendar2MonthFill } from "react-icons/bs";
 export default function Sidebar() {
   const [name, setName] = useState("");
   const router = useRouter();
@@ -119,6 +119,15 @@ export default function Sidebar() {
           <p>Sales/day</p>
         </Link>
       </li>
+
+      <li className="nav-item">
+        <Link href="/backoffice/report-sum-sale-per-month" className="nav-link text-white d-flex align-items-center">
+          <BsCalendar2MonthFill    className="nav-icon me-2" />
+          <p>Sales/month</p>
+        </Link>
+      </li>
+
+      
 
     </ul>
   </nav>

@@ -74,8 +74,9 @@ app.post("/api/organization/upload", (req, res) => OrganizationController.upload
 app.post("/api/billsale/list", (req, res) => BillSaleController.list(req, res));
 app.delete("/api/billsale/remove/:id",(req, res)=>BillSaleController.remove(req, res));
 
-//
+//Report
 app.post('/api/report/sumPerDayInYearAndMonth', (req, res) => ReportController.sumPerDayInYearAndMonth(req, res));
+app.post('/api/report/sumPerMonthInYear', (req, res) => ReportController.sumPerMonthInYear(req, res));
 
 
 app.listen(3001,()=>{

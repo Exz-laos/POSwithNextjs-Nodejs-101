@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 
 export default function ReportSumSalePerDay() {
     const [arrYear, setArrYear] = useState<number[]>([]);
-    const [arrMonth, setArrMonth] = useState(['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']);
+    const [arrMonth] = useState(['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() +1);
     const [data, setData] = useState([]);
@@ -17,7 +17,6 @@ export default function ReportSumSalePerDay() {
     useEffect(() => {
         setArrYear(Array.from({ length: 5}, (_, index) => dayjs().year() - index));
         fetchData();
-        
     },[])
 
     const fetchData = async () => {
@@ -49,11 +48,11 @@ export default function ReportSumSalePerDay() {
 
     return (
         <div className='card mt-3'>
-            <div className='card-header'>สรุปยอดขายรายวัน</div>
+            <div className='card-header'>Sales each day</div>
             <div className='card-body'>
                 <div className='row'>
                     <div className='col-md-3'>
-                        <div>ปี</div>
+                        <div>Year</div>
                         <select
                             className='form-control'
                             value={selectedYear}
@@ -64,7 +63,7 @@ export default function ReportSumSalePerDay() {
                         </select>
                     </div>
                     <div className='col-md-3'>
-                        <div>เดือน</div>
+                        <div>Month</div>
                         <select
                             className='form-control'
                             value={selectedMonth}
@@ -78,7 +77,7 @@ export default function ReportSumSalePerDay() {
                         <div>&nbsp;</div>
                         <button className='btn btn-primary' onClick={fetchData}>
                             <i className='fa fa-search me-2'></i>
-                            แสดงรายการ
+                            Search
                         </button>
                     </div>
                 </div>
@@ -86,8 +85,8 @@ export default function ReportSumSalePerDay() {
                 <table className='table table-bordered table-striped mt-3'>
                     <thead>
                         <tr>
-                            <th>วันที่</th>
-                            <th className='text-end' style={{ width: '100px' }}>ยอดขาย</th>
+                            <th>Date</th>
+                            <th className='text-end' style={{ width: '100px' }}>Sales</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -100,7 +99,7 @@ export default function ReportSumSalePerDay() {
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>รวม</th>
+                            <th>Total</th>
                             <th className='text-end'>{totalAmount.toLocaleString('th-TH')}</th>
                         </tr>
                     </tfoot>
