@@ -9,6 +9,7 @@ import { IoFastFoodOutline } from "react-icons/io5";
 import { GiHotMeal,GiForkKnifeSpoon  } from "react-icons/gi";
 import { TbReportAnalytics } from "react-icons/tb";
 import { BsCalendar2MonthFill } from "react-icons/bs";
+import { RiDashboard2Line } from "react-icons/ri";
 export default function Sidebar() {
   const [name, setName] = useState("");
   const router = useRouter();
@@ -68,6 +69,12 @@ export default function Sidebar() {
   {/* Navigation Menu */}
   <nav className="mt-2">
     <ul className="nav nav-pills nav-sidebar flex-column" role="menu">
+      <li className="nav-item">
+        <Link href="/backoffice/dashboard" className="nav-link text-white d-flex align-items-center">
+          <RiDashboard2Line     className="nav-icon me-2" />
+          <p>Dashboard</p>
+        </Link>
+      </li>
       <li className="nav-item">
         <Link href="/backoffice/sale" className="nav-link text-white d-flex align-items-center">
           <FaCashRegister className="nav-icon me-2" />  {/* Changed to represent "Sale" */}
