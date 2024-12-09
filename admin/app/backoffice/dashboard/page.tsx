@@ -105,7 +105,11 @@ export default function ModernDashboard() {
                 month: month
             }
 
-            const res = await axios.post(`${config.apiServer}/api/report/sumPerDayInYearAndMonth`, payload);
+            const headers = {
+                'Authorization': 'Bearer ' + localStorage.getItem(config.token)
+            }
+
+            const res = await axios.post(`${config.apiServer}/api/report/sumPerDayInYearAndMonth`, payload, {headers});
             setIncomePerDays(res.data.results);
             createBarChartDays(res.data.results);
         } catch (e: any) {
@@ -183,8 +187,11 @@ export default function ModernDashboard() {
             const payload = {
                 year: selectedYear
             }
+            const headers = {
+                'Authorization': 'Bearer ' + localStorage.getItem(config.token)
+            }
 
-            const res = await axios.post(`${config.apiServer}/api/report/sumPerMonthInYear`, payload);
+            const res = await axios.post(`${config.apiServer}/api/report/sumPerMonthInYear`, payload, {headers});
             setIncomePerMonths(res.data.results);
             createBarChartMonths(res.data.results);
         } catch (e: any) {

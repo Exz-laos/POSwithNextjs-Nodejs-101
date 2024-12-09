@@ -22,6 +22,26 @@ const { report } = require("process");
 const ReportController = require("./controller/ReportController");
 
 
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+const isAuthent = (req, res, next) => {
+    if (req.headers.authorization) {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        
+        if (decoded) {
+            next();
+        }else { 
+            return res.status(401).send({ error: "Unauthorized" });
+        }
+    }else {
+        return res.status(401).send({ error: "Unauthorized" });
+    }
+}
+
 //admin
 app.post("/api/user/signIn", (req, res) => UserController.signIn(req, res));
 app.post("/api/user/create", (req, res) => UserController.create(req, res));
@@ -79,8 +99,8 @@ app.post("/api/billsale/list", (req, res) => BillSaleController.list(req, res));
 app.delete("/api/billsale/remove/:id",(req, res)=>BillSaleController.remove(req, res));
 
 //Report
-app.post('/api/report/sumPerDayInYearAndMonth', (req, res) => ReportController.sumPerDayInYearAndMonth(req, res));
-app.post('/api/report/sumPerMonthInYear', (req, res) => ReportController.sumPerMonthInYear(req, res));
+app.post('/api/report/sumPerDayInYearAndMonth', isAuthent, (req, res) => ReportController.sumPerDayInYearAndMonth(req, res));
+app.post('/api/report/sumPerMonthInYear',isAuthent,  (req, res) => ReportController.sumPerMonthInYear(req, res));
 
 
 app.listen(3001,()=>{
