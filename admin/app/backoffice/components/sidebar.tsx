@@ -10,6 +10,7 @@ import { GiHotMeal,GiForkKnifeSpoon  } from "react-icons/gi";
 import { TbReportAnalytics } from "react-icons/tb";
 import { BsCalendar2MonthFill } from "react-icons/bs";
 import { RiDashboard2Line } from "react-icons/ri";
+import { HiMiniUsers } from "react-icons/hi2";
 export default function Sidebar() {
   const [name, setName] = useState("");
   const router = useRouter();
@@ -131,6 +132,13 @@ export default function Sidebar() {
         <Link href="/backoffice/report-sum-sale-per-month" className="nav-link text-white d-flex align-items-center">
           <BsCalendar2MonthFill    className="nav-icon me-2" />
           <p>Sales/month</p>
+        </Link>
+      </li>
+
+      <li className="nav-item">
+        <Link href="/backoffice/user" className="nav-link text-white d-flex align-items-center">
+          <HiMiniUsers     className="nav-icon me-2" />
+          <p>Staff User</p>
         </Link>
       </li>
 

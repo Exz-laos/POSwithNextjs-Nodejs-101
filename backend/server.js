@@ -24,6 +24,10 @@ const ReportController = require("./controller/ReportController");
 
 //admin
 app.post("/api/user/signIn", (req, res) => UserController.signIn(req, res));
+app.post("/api/user/create", (req, res) => UserController.create(req, res));
+app.get("/api/user/list", (req, res) => UserController.list(req, res));
+app.put("/api/user/update", (req, res)=>UserController.update(req, res));
+app.delete("/api/user/remove/:id",(req, res)=>UserController.remove(req, res));
 //admin-foodtype
 app.post("/api/foodtype/create", (req, res) => FoodTypeController.create(req, res));
 app.get("/api/foodtype/list", (req, res) => FoodTypeController.list(req, res));
