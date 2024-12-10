@@ -112,5 +112,16 @@ module.exports = {
         }catch(e){
             return res.status(500).send({ error: e.message });
         }
+    },
+    getLevelByToken : async(req,res)=>{
+        try{
+            const token = req.headers.authorization.split(' ')[1];
+            const user = jwt.verify(token, process.env.SECRET_KEY);
+
+            return res.send({ level: user.level });
+
+        }catch{
+            return res.status(500).send({ error: e.message });
+        }
     }
 }

@@ -48,6 +48,7 @@ app.post("/api/user/create", (req, res) => UserController.create(req, res));
 app.get("/api/user/list", (req, res) => UserController.list(req, res));
 app.put("/api/user/update", (req, res)=>UserController.update(req, res));
 app.delete("/api/user/remove/:id",(req, res)=>UserController.remove(req, res));
+app.get('/api/user/getLevelByToken', (req, res) => UserController.getLevelByToken(req, res));
 //admin-foodtype
 app.post("/api/foodtype/create", (req, res) => FoodTypeController.create(req, res));
 app.get("/api/foodtype/list", (req, res) => FoodTypeController.list(req, res));
@@ -70,6 +71,7 @@ app.get("/api/food/list", (req, res) => FoodController.list(req, res));
 app.put("/api/food/update", (req, res)=>FoodController.update(req, res));
 app.delete("/api/food/remove/:id",(req, res)=>FoodController.remove(req, res));
 app.get("/api/food/filter/:foodType", (req, res) => FoodController.filter(req, res));
+app.post("/api/food/paginate", (req, res) => FoodController.paginate(req, res));
 
 //saleTemp
 app.post("/api/saletemp/create", (req, res) => SaleTempController.create(req, res));

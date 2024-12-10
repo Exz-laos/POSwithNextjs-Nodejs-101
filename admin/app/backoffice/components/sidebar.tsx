@@ -11,14 +11,39 @@ import { TbReportAnalytics } from "react-icons/tb";
 import { BsCalendar2MonthFill } from "react-icons/bs";
 import { RiDashboard2Line } from "react-icons/ri";
 import { HiMiniUsers } from "react-icons/hi2";
+import { BiFoodMenu } from "react-icons/bi";
+import axios from "axios";
 export default function Sidebar() {
   const [name, setName] = useState("");
   const router = useRouter();
 
+  const [userLevel,setUserLevel] = useState("");
+
   useEffect(() => {
     const storedName = localStorage.getItem("next_name");
     setName(storedName ?? "");
+    getUserLevel();
   }, []);
+
+  const getUserLevel = async () => {
+    try{
+      const token = localStorage.getItem(config.token);
+      if (token !== null) {
+        const headers = {
+          'Authorization': 'Bearer ' + token
+        }
+        const res = await axios.get(config.apiServer + "/api/user/getLevelByToken", { headers });
+        setUserLevel(res.data.level);
+      }
+    }catch(e: any){
+      Swal.fire({
+        title: "Error",
+        text: e.message,
+        icon: "error",
+      })
+
+    }
+  }
 
   const signOut = async () => {
     try {
@@ -70,79 +95,97 @@ export default function Sidebar() {
   {/* Navigation Menu */}
   <nav className="mt-2">
     <ul className="nav nav-pills nav-sidebar flex-column" role="menu">
-      <li className="nav-item">
-        <Link href="/backoffice/dashboard" className="nav-link text-white d-flex align-items-center">
-          <RiDashboard2Line     className="nav-icon me-2" />
-          <p>Dashboard</p>
-        </Link>
-      </li>
-      <li className="nav-item">
-        <Link href="/backoffice/sale" className="nav-link text-white d-flex align-items-center">
-          <FaCashRegister className="nav-icon me-2" />  {/* Changed to represent "Sale" */}
-          <p>Sale</p>
-        </Link>
-      </li>
-      <li className="nav-item">
-        <Link href="/backoffice/food-type" className="nav-link text-white d-flex align-items-center">
-          <GiHotMeal className="nav-icon me-2" />  {/* Changed to represent "Food Types" */}
-          <p>Food types</p>
-        </Link>
-      </li>
-      <li className="nav-item">
-        <Link href="/backoffice/food-size" className="nav-link text-white d-flex align-items-center">
-          <FaRulerCombined className="nav-icon me-2" />  {/* Changed to represent "Food Size" */}
-          <p>Food size</p>
-        </Link>
-      </li>
-      <li className="nav-item">
-        <Link href="/backoffice/food-taste" className="nav-link text-white d-flex align-items-center">
-          <GiForkKnifeSpoon className="nav-icon me-2" />  {/* Changed to represent "Food Taste" */}
-          <p>Food taste</p>
-        </Link>
-      </li>
-      <li className="nav-item">
-        <Link href="/backoffice/food" className="nav-link text-white d-flex align-items-center">
-          <IoFastFoodOutline className="nav-icon me-2" />
-          <p>Food</p>
-        </Link>
-      </li>
 
-      <li className="nav-item">
-        <Link href="/backoffice/organization" className="nav-link text-white d-flex align-items-center">
-          <FaStoreAlt className="nav-icon me-2" />
-          <p>My Store</p>
-        </Link>
-      </li>
-
-      <li className="nav-item">
-        <Link href="/backoffice/report-bill-sale" className="nav-link text-white d-flex align-items-center">
-          <TbReportAnalytics  className="nav-icon me-2" />
-          <p>My Report</p>
-        </Link>
-      </li>
-
-      <li className="nav-item">
-        <Link href="/backoffice/report-sum-sale-per-day" className="nav-link text-white d-flex align-items-center">
-          <FaCalendarDay   className="nav-icon me-2" />
-          <p>Sales/day</p>
-        </Link>
-      </li>
-
-      <li className="nav-item">
-        <Link href="/backoffice/report-sum-sale-per-month" className="nav-link text-white d-flex align-items-center">
-          <BsCalendar2MonthFill    className="nav-icon me-2" />
-          <p>Sales/month</p>
-        </Link>
-      </li>
-
-      <li className="nav-item">
-        <Link href="/backoffice/user" className="nav-link text-white d-flex align-items-center">
-          <HiMiniUsers     className="nav-icon me-2" />
-          <p>Staff User</p>
-        </Link>
-      </li>
-
+      {userLevel === "admin" && (
+         <li className="nav-item">
+         <Link href="/backoffice/dashboard" className="nav-link text-white d-flex align-items-center">
+           <RiDashboard2Line     className="nav-icon me-2" />
+           <p>Dashboard</p>
+         </Link>
+       </li>
+      )}
       
+      {userLevel === 'admin' || userLevel === 'user' ? 
+            <li className="nav-item">
+            <Link href="/backoffice/sale" className="nav-link text-white d-flex align-items-center">
+              <FaCashRegister className="nav-icon me-2" />  {/* Changed to represent "Sale" */}
+              <p>Sale</p>
+            </Link>
+          </li>
+          : <></>
+      }
+
+
+      {userLevel === "admin" && (
+         <>
+                    <li className="nav-item">
+                <Link href="/backoffice/food-type" className="nav-link text-white d-flex align-items-center">
+                  <GiHotMeal className="nav-icon me-2" />  {/* Changed to represent "Food Types" */}
+                  <p>Food types</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/backoffice/food-size" className="nav-link text-white d-flex align-items-center">
+                  <FaRulerCombined className="nav-icon me-2" />  {/* Changed to represent "Food Size" */}
+                  <p>Food size</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/backoffice/food-taste" className="nav-link text-white d-flex align-items-center">
+                  <GiForkKnifeSpoon className="nav-icon me-2" />  {/* Changed to represent "Food Taste" */}
+                  <p>Food taste</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/backoffice/food" className="nav-link text-white d-flex align-items-center">
+                  <IoFastFoodOutline className="nav-icon me-2" />
+                  <p>Food</p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="/backoffice/food-paginate" className="nav-link text-white d-flex align-items-center">
+                  <BiFoodMenu  className="nav-icon me-2" />
+                  <p>Food (paginate)</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link href="/backoffice/organization" className="nav-link text-white d-flex align-items-center">
+                  <FaStoreAlt className="nav-icon me-2" />
+                  <p>My Store</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link href="/backoffice/report-bill-sale" className="nav-link text-white d-flex align-items-center">
+                  <TbReportAnalytics  className="nav-icon me-2" />
+                  <p>My Report</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link href="/backoffice/report-sum-sale-per-day" className="nav-link text-white d-flex align-items-center">
+                  <FaCalendarDay   className="nav-icon me-2" />
+                  <p>Sales/day</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link href="/backoffice/report-sum-sale-per-month" className="nav-link text-white d-flex align-items-center">
+                  <BsCalendar2MonthFill    className="nav-icon me-2" />
+                  <p>Sales/month</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link href="/backoffice/user" className="nav-link text-white d-flex align-items-center">
+                  <HiMiniUsers     className="nav-icon me-2" />
+                  <p>Staff User</p>
+                </Link>
+              </li>
+         </>
+        
+      )}
 
     </ul>
   </nav>

@@ -184,6 +184,35 @@ module.exports = {
         } catch (e) {
             return res.status(500).send({ error: e.message })
         }
+    },
+    paginate: async (req, res) => {
+        try{
+            const page = req.body.page;
+            const itemsPerPage = req.body.itemsPerPage;
+            const foods = await prisma.food.findMany({
+                skip: (page - 1) * itemsPerPage,
+                take: itemsPerPage,
+                orderBy: {
+                    id: 'desc'
+                },
+                where: {
+                    status : 'use'
+                }
+            })
+            const totalItems = await prisma.food.count({
+                where: {
+                    status: 'use'
+                }
+            })
+
+            const totalPage = Math.ceil(totalItems / itemsPerPage);
+
+            return res.send({ results: foods, totalItems: totalItems, totalPage: totalPage });
+
+        }catch(e){
+            return res.status(500).send({ error: e.message });
+        }
     }
+
   
 }
